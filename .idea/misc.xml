@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.22" />
+        <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.168" />
+        <entry key="app/src/main/res/drawable/account_24.xml" value="0.4578125" />
+        <entry key="app/src/main/res/drawable/ic_Logo_SP_background.xml" value="0.168" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.22135416666666666" />
+        <entry key="app/src/main/res/drawable/ic_password.xml" value="0.22135416666666666" />
+        <entry key="app/src/main/res/layout/activity_detail_reception.xml" value="0.3740942028985507" />
+        <entry key="app/src/main/res/layout/activity_grid_header.xml" value="0.3740942028985507" />
+        <entry key="app/src/main/res/layout/activity_header_reception.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_listra_proveedores.xml" value="0.36594202898550726" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/item_orden_compras.xml" value="0.3645833333333333" />
+        <entry key="app/src/main/res/layout/item_proveedor.xml" value="0.3500905797101449" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.22135416666666666" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.168" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

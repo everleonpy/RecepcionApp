@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Recepcion Movil</string>
+    <string name="txt_Login_Header">Login</string>
+
+    <!-- String Login Hints -->
+    <string name="hint_Username">Nombre de Usuario</string>
+    <string name="hint_Password">Password</string>
+
+    <!-- Login Button Label -->
+    <string name="btn_Aceptar">Aceptar</string>
+    <string name="btn_Volver">Volver</string>
+    <string name="btn_Salir">Salir</string>
+    <string name="btn_Buscar">Buscar</string>
+    <string name="btn_Select_Recepcion">Procesar Recepcion</string>
+
+    <!-- Detalle Recepcion -->
+    <string name="str_Nro_Recepcion">Nro Recepcion : </string>
+    <string name="str_Proveedor">Proveedor : </string>
+    <string name="str_Nro_OC">Nro OC : </string>
+    <!-- Button Labels -->
+    <string name="btnGuardar">Guardar</string>
+    <string name="wProveedor">Proveedor :</string>
+    <string name="wFechaDesde">Fecha Desde</string>
+    <string name="etFechaDesde">Fecha Hasta</string>
+    <string name="tvFechaDesde">Fecha Desde :</string>
+    <string name="headerDepisito">"Deposito : "</string>
+
+</resources>
