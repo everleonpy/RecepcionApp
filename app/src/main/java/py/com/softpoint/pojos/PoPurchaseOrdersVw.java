@@ -16,7 +16,7 @@ public class PoPurchaseOrdersVw implements Serializable
     private Double volumenOvrTolPct;
     private Double stdOvrTolPct;
     private Integer maxLateDays;
-    private Date promisedDate;
+    private String promisedDate;
     private String receivingAction;
     private String siteName;
     private String notifyTo;
@@ -31,23 +31,23 @@ public class PoPurchaseOrdersVw implements Serializable
     private String vendorName;
     private Double lcAmount;
     private Double amount;
-    private Date expirationDate;
-    private Date awaitedDate;
+    private String expirationDate;
+    private String awaitedDate;
     private Long unitId;
     private Long identifier;
     private Long vendorId;
     private Long orgId;
-    private Date poDate;
+    private String poDate;
     private Long siteId;
 
     public PoPurchaseOrdersVw() {
     }
 
     public PoPurchaseOrdersVw(String comments, Integer vendorSiteId, Integer maxEarlyDays, String overRecptAction, Integer receivingId, String vndSiteName,
-                              String orderType, Double volumenOvrTolPct, Double stdOvrTolPct, Integer maxLateDays, Date promisedDate, String receivingAction,
-                              String siteName, String notifyTo, String poNumber, String currencyName, String poStatus, String purchaserName, Long purchaserId,
-                              String fullReceipt, Double weightOvrTolPct, Long currendyId, String vendorName, Double lcAmount, Double amount, Date expirationDate,
-                              Date awaitedDate, Long unitId, Long identifier, Long vendorId, Long orgId, Date poDate, Long siteId) {
+                              String orderType, Double volumenOvrTolPct, Double stdOvrTolPct, Integer maxLateDays, String promisedDate, String receivingAction,
+                              String siteName, String notifyTo, String poNumber, String currencyName, String poStatus, String purchaserName, Long purchaserId, String fullReceipt,
+                              Double weightOvrTolPct, Long currendyId, String vendorName, Double lcAmount, Double amount, String expirationDate, String awaitedDate, Long unitId, Long identifier,
+                              Long vendorId, Long orgId, String poDate, Long siteId) {
 
         this.comments = comments;
         this.vendorSiteId = vendorSiteId;
@@ -164,11 +164,11 @@ public class PoPurchaseOrdersVw implements Serializable
         this.maxLateDays = maxLateDays;
     }
 
-    public Date getPromisedDate() {
+    public String getPromisedDate() {
         return promisedDate;
     }
 
-    public void setPromisedDate(Date promisedDate) {
+    public void setPromisedDate(String promisedDate) {
         this.promisedDate = promisedDate;
     }
 
@@ -284,19 +284,19 @@ public class PoPurchaseOrdersVw implements Serializable
         this.amount = amount;
     }
 
-    public Date getExpirationDate() {
+    public String getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(Date expirationDate) {
+    public void setExpirationDate(String expirationDate) {
         this.expirationDate = expirationDate;
     }
 
-    public Date getAwaitedDate() {
+    public String getAwaitedDate() {
         return awaitedDate;
     }
 
-    public void setAwaitedDate(Date awaitedDate) {
+    public void setAwaitedDate(String awaitedDate) {
         this.awaitedDate = awaitedDate;
     }
 
@@ -332,11 +332,11 @@ public class PoPurchaseOrdersVw implements Serializable
         this.orgId = orgId;
     }
 
-    public Date getPoDate() {
+    public String getPoDate() {
         return poDate;
     }
 
-    public void setPoDate(Date poDate) {
+    public void setPoDate(String poDate) {
         this.poDate = poDate;
     }
 

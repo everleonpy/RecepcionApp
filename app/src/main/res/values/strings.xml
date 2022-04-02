@@ -24,5 +24,6 @@
     <string name="etFechaDesde">Fecha Hasta</string>
     <string name="tvFechaDesde">Fecha Desde :</string>
     <string name="headerDepisito">"Deposito : "</string>
+    <string name="consultar">Consultar</string>
 
 </resources>

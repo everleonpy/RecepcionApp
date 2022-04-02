@@ -6,7 +6,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
+
 import py.com.softpoint.R;
 import py.com.softpoint.pojos.PoPurchaseOrdersVw;
 
@@ -41,7 +46,7 @@ public class PoPurchaseOrdersVwAdapter extends RecyclerView.Adapter<PoPurchaseOr
     *  View Holder
     */
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvNroOC, tvFechaOC, tvTipoOC;
+        TextView tvNroOC, tvFechaOC, tvTipoOC, tvMontoOC;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -49,13 +54,22 @@ public class PoPurchaseOrdersVwAdapter extends RecyclerView.Adapter<PoPurchaseOr
             tvNroOC = itemView.findViewById(R.id.itOCNro);
             tvFechaOC = itemView.findViewById(R.id.itOCFecha);
             tvTipoOC = itemView.findViewById(R.id.itOCTipo);
+            tvMontoOC = itemView.findViewById(R.id.itMontoOC);
 
         }
 
         public void cargarDatos(PoPurchaseOrdersVw poPurchaseOrdersVw) {
             tvNroOC.setText(poPurchaseOrdersVw.getPoNumber().trim());
-            tvFechaOC.setText(poPurchaseOrdersVw.getPoDate().toString());
+            tvFechaOC.setText(poPurchaseOrdersVw.getPoDate().trim());
             tvTipoOC.setText(poPurchaseOrdersVw.getOrderType());
+            tvMontoOC.setText(nroFormat(poPurchaseOrdersVw.getAmount()));
+        }
+
+        private String nroFormat(Double amount) {
+            DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.getDefault());
+            formatter.applyPattern("#,###,###,###");
+            String resp = formatter.format(amount).trim() ;
+            return resp;
         }
     }
 }
