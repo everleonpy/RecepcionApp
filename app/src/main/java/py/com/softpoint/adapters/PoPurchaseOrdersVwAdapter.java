@@ -14,14 +14,22 @@ import java.util.Locale;
 
 import py.com.softpoint.R;
 import py.com.softpoint.pojos.PoPurchaseOrdersVw;
+import py.com.softpoint.utils.NumberTools;
 
 public class PoPurchaseOrdersVwAdapter extends RecyclerView.Adapter<PoPurchaseOrdersVwAdapter.ViewHolder> {
 
     private List<PoPurchaseOrdersVw> listaOrdened;
+    final PoPurchaseOrdersVwAdapter.OnItemClickListener  listener;
+
+    public interface OnItemClickListener {
+        void onItemClick(PoPurchaseOrdersVw item);
+    }
 
 
-    public PoPurchaseOrdersVwAdapter(List<PoPurchaseOrdersVw> listaOrdened) {
+
+    public PoPurchaseOrdersVwAdapter(List<PoPurchaseOrdersVw> listaOrdened, PoPurchaseOrdersVwAdapter.OnItemClickListener listener) {
         this.listaOrdened = listaOrdened;
+        this.listener = listener;
     }
 
     @NonNull
@@ -58,18 +66,23 @@ public class PoPurchaseOrdersVwAdapter extends RecyclerView.Adapter<PoPurchaseOr
 
         }
 
-        public void cargarDatos(PoPurchaseOrdersVw poPurchaseOrdersVw) {
+        public void cargarDatos(final PoPurchaseOrdersVw poPurchaseOrdersVw) {
             tvNroOC.setText(poPurchaseOrdersVw.getPoNumber().trim());
             tvFechaOC.setText(poPurchaseOrdersVw.getPoDate().trim());
             tvTipoOC.setText(poPurchaseOrdersVw.getOrderType());
-            tvMontoOC.setText(nroFormat(poPurchaseOrdersVw.getAmount()));
+            tvMontoOC.setText(NumberTools.nroFormat(poPurchaseOrdersVw.getAmount()));
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onItemClick(poPurchaseOrdersVw);
+                }
+            });
         }
-
-        private String nroFormat(Double amount) {
+        /*private String nroFormat(Double amount) {
             DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.getDefault());
             formatter.applyPattern("#,###,###,###");
             String resp = formatter.format(amount).trim() ;
             return resp;
-        }
+        }*/
     }
 }

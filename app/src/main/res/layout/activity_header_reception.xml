@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:id="@+id/LinerLayoutMain"
-        android:layout_width="360dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
@@ -17,7 +17,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="6sp">
+        android:layout_marginTop="6sp"
+        android:padding="4dp">
 
         <TableLayout
             android:layout_width="match_parent"
@@ -145,20 +146,20 @@
 
                 <Button
                     android:id="@+id/btnBack"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:text="@string/btn_Volver" />
 
                 <Button
                     android:id="@+id/btnConsultar"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:text="@string/consultar" />
 
 
@@ -169,7 +170,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvListaOCs"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_margin="4dp">
 
         </androidx.recyclerview.widget.RecyclerView>
 

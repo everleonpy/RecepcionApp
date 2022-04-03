@@ -1,6 +1,8 @@
 package py.com.softpoint;
 
 import android.content.Intent;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,6 +33,7 @@ import py.com.softpoint.pojos.PayVendor;
 import py.com.softpoint.pojos.PoPurchaseOrdersVw;
 import py.com.softpoint.pojos.User;
 import py.com.softpoint.utils.Cliente;
+import py.com.softpoint.utils.NumberTools;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -43,9 +46,9 @@ public class HeaderReception extends AppCompatActivity implements View.OnClickLi
     private List<PoPurchaseOrdersVw> listaOCs;
     private PoPurchaseOrdersVwAdapter poAdapter;
     private TextView tvProveedorName, tvRuc;
-    private EditText etFechaDesde, etFechaHasta;
     private Calendar calendar;
-    private List<InvWarehouse> lstDepositos;
+    private EditText etFechaDesde, etFechaHasta;
+    private List<InvWarehouse> lstDepositos;  //Depositos
     private User userLoged;
     private String baseURL;
     private int dia, mes, anho;
@@ -195,15 +198,25 @@ public class HeaderReception extends AppCompatActivity implements View.OnClickLi
                         {
                             if (listaOCs.size() > 0) {
                                 //TODO Cargar el RecyclerView
-                                poAdapter = new PoPurchaseOrdersVwAdapter(listaOCs);
+                                poAdapter = new PoPurchaseOrdersVwAdapter(listaOCs, new PoPurchaseOrdersVwAdapter.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(PoPurchaseOrdersVw item) {
+                                            procesarItemsOC(item);
+                                    }
+                                });
                                 rvListaOCs.setAdapter(poAdapter);
                             }else{
                                Log.i("ITEMS","SIN ITEMS");
                             }
                         }else{
                             //TODO Cargar el RecyclerView con valor null
-                            poAdapter = new PoPurchaseOrdersVwAdapter(listaOCs);
-                            rvListaOCs.setAdapter(poAdapter);
+                            /*poAdapter = new PoPurchaseOrdersVwAdapter(listaOCs, new PoPurchaseOrdersVwAdapter.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(PoPurchaseOrdersVw item) {
+                                    procesarItemsOC(item);
+                                }
+                            });
+                            rvListaOCs.setAdapter(poAdapter); */
                             Toast.makeText(this.getApplicationContext(),"No hay ordenes pendientes de recepcion",Toast.LENGTH_LONG).show();
                         }
 
@@ -215,6 +228,44 @@ public class HeaderReception extends AppCompatActivity implements View.OnClickLi
             default:
                 break;
         }
+
+    }
+
+
+    /**
+     * Metodo para invocado al seleccoinar la OC a procesar
+     * @param item
+     */
+    private void procesarItemsOC(PoPurchaseOrdersVw item) {
+        //Toast.makeText(getApplicationContext(),"Item Seleccionado :  Nro OC : "+item.getPoNumber(), Toast.LENGTH_LONG).show();
+
+        final AlertDialog.Builder alter = new AlertDialog.Builder(HeaderReception.this);
+        View xView = getLayoutInflater().inflate(R.layout.confirm_oc_process, null);
+
+        TextView ocTvNroOC = xView.findViewById(R.id.lblNroOC);
+        ocTvNroOC.setText(item.getPoNumber());
+        TextView ocMonto = xView.findViewById(R.id.lblMonto);
+        ocMonto.setText(NumberTools.nroFormat(item.getAmount()));
+
+        Button btnCancelar = xView.findViewById(R.id.btnCancelOC);
+        Button btnRecepcionarOC = xView.findViewById(R.id.btnRecepcionarOC);
+        alter.setView(xView);
+
+        final AlertDialog confOC = alter.create();
+        confOC.setCanceledOnTouchOutside(false);
+
+
+        btnCancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    confOC.dismiss();
+            }
+        });
+
+
+        confOC.show();
+
+
 
     }
 
