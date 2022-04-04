@@ -35,7 +35,7 @@ public class PoPurchaseOrdersVwAdapter extends RecyclerView.Adapter<PoPurchaseOr
     @NonNull
     @Override
     public PoPurchaseOrdersVwAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_orden_compras,null, true);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_orden_compras,parent, false);
         return new ViewHolder(view);
     }
 
