@@ -14,9 +14,7 @@
     <string name="btn_Select_Recepcion">Procesar Recepcion</string>
 
     <!-- Detalle Recepcion -->
-    <string name="str_Nro_Recepcion">Nro Recepcion : </string>
-    <string name="str_Proveedor">Proveedor : </string>
-    <string name="str_Nro_OC">Nro OC : </string>
+     <string name="str_Nro_OC">Nro OC : </string>
     <!-- Button Labels -->
     <string name="btnGuardar">Guardar</string>
     <string name="wProveedor">Proveedor :</string>

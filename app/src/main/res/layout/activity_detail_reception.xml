@@ -1,151 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="4dp"
+    android:padding="2dp"
     tools:context=".DetailReception">
 
-    <LinearLayout
-        android:layout_width="360dp"
-        android:layout_height="480dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="#E9ECEF"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="3dp"
+        app:contentPadding="4dp"
+        >
 
-        <TableLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TableRow
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:text="@string/str_Nro_Recepcion" />
-
-                <EditText
-                    android:id="@+id/etNroRecepcion"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:editable="false"
-                    android:ems="10"
-                    android:inputType="textPersonName"
-                    tools:ignore="SpeakableTextPresentCheck" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                    android:textSize="18dp"
+                    android:text="Nro OC : "
+                    android:textAlignment="textEnd"
+                    />
 
                 <TextView
-                    android:id="@+id/textView5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:text="@string/str_Proveedor" />
-
-                <EditText
-                    android:id="@+id/editTextTextPersonName2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:editable="false"
-                    android:ems="10"
-                    android:inputType="textPersonName"
-                    tools:ignore="SpeakableTextPresentCheck" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:id="@+id/textView6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:text="@string/str_Nro_OC" />
-
-                <EditText
-                    android:id="@+id/etNroOC"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:editable="false"
-                    android:ems="10"
-                    android:inputType="textPersonName"
-                    tools:ignore="SpeakableTextPresentCheck" />
-            </TableRow>
-
-        </TableLayout>
-
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="10dp">
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" >
-
-                <EditText
-                    android:id="@+id/etCodigoProductro"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="Codigo Producto"
-                    android:inputType="textPersonName"
-                    tools:ignore="SpeakableTextPresentCheck" />
-
-                <Spinner
-                    android:id="@+id/spUDM"
+                    android:id="@+id/dataNroOC"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    tools:ignore="SpeakableTextPresentCheck" />
-            </TableRow>
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:textSize="18dp"
+                    android:textStyle="bold"
+                    />
 
-            <TableRow
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/txtDescripcionProducto"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_weight="1" />
-            </TableRow>
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="18dp"
+                    android:text="Proveedor : "
+                    android:textAlignment="textEnd"
+                    />
 
-            <TableRow
+                <TextView
+                    android:id="@+id/dataProveedorName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="18dp"
+                    android:textStyle="bold"
+                    />
+
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- DETALLE DATA ENTRY -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="#E9ECEF"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="3dp"
+        app:contentPadding="4dp"
+        android:layout_marginTop="6dp"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="4dp">
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/etCantidadProducto"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:inputType="numberSigned"
-                    tools:ignore="SpeakableTextPresentCheck" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18dp"
+                    android:textAlignment="center"
+                    android:text="Items Ordenes de Compra"
+                    android:textStyle="bold"
+                    />
+
+            </LinearLayout>
+            <!-- Botones -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/btnGuardar"
+                    android:id="@+id/btnRcpEliminar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:text="@string/btnGuardar" />
-            </TableRow>
+                    android:text="Eliminar"
+                    />
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </TableLayout>
-    </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <Button
+                    android:id="@+id/btnRcpSinOrden"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Sin Orden" />
+
+                <Button
+                    android:id="@+id/btnRcpRecibir"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Recibir" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <SearchView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvRcpItemsProductos"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="2dp"
+        android:padding="4dp"
+        />
+
+</LinearLayout>
+

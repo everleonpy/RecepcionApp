@@ -254,13 +254,24 @@ public class HeaderReception extends AppCompatActivity implements View.OnClickLi
         final AlertDialog confOC = alter.create();
         confOC.setCanceledOnTouchOutside(false);
 
+            btnRecepcionarOC.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Llamamos al Intenen encargado de procesar la recepcion
+                    Intent intent = new Intent(v.getContext(), DetailReception.class);
+                    intent.putExtra("USER_LOGED", userLoged);
+                    intent.putExtra("PROVEEDOR",proveedorSelected);
+                    intent.putExtra("OC_SELECTED",item);
+                    v.getContext().startActivity(intent);
+                }
+            });
 
-        btnCancelar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                    confOC.dismiss();
-            }
-        });
+            btnCancelar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                        confOC.dismiss();
+                }
+            });
 
 
         confOC.show();
@@ -284,7 +295,6 @@ public class HeaderReception extends AppCompatActivity implements View.OnClickLi
         Log.i("OC_PARAM","/"+vendorId+"/"+unitId+"/"+fechaDesde+"/"+fechaHasta);
 
         PoPurchaseOrdersWSApi api = Cliente.getClient(this.baseURL).create(PoPurchaseOrdersWSApi.class);
-        //Call<List<PoPurchaseOrdersVw>> call = api.getOCPendientes(vendorId, unitId, fechaDesde, fechaHasta);
         Call<List<PoPurchaseOrdersVw>> call = api.postOCPendites(new ListaOCParam(vendorId,unitId,fechaDesde,fechaHasta));
 
         try{

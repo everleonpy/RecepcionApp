@@ -87,7 +87,6 @@ public class ListraProveedores extends AppCompatActivity implements SearchView.O
 
                 }
             });
-
             hiloGet.start();
             hiloGet.join();
 

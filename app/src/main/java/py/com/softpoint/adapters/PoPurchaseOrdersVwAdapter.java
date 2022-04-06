@@ -78,11 +78,6 @@ public class PoPurchaseOrdersVwAdapter extends RecyclerView.Adapter<PoPurchaseOr
                 }
             });
         }
-        /*private String nroFormat(Double amount) {
-            DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.getDefault());
-            formatter.applyPattern("#,###,###,###");
-            String resp = formatter.format(amount).trim() ;
-            return resp;
-        }*/
+
     }
 }
