@@ -17,8 +17,16 @@ public class PoPurchOrdersProdsVwAdapter extends RecyclerView.Adapter<PoPurchOrd
 
     private List<PoPurchOrdersProdsVw> listItemOC;
 
-    public PoPurchOrdersProdsVwAdapter(List<PoPurchOrdersProdsVw> listItemOC) {
+    final PoPurchOrdersProdsVwAdapter.OnItemClickListener  listener;
+
+    public interface OnItemClickListener {
+        void onItemClick(PoPurchOrdersProdsVw item);
+    }
+
+    public PoPurchOrdersProdsVwAdapter(List<PoPurchOrdersProdsVw> listItemOC, PoPurchOrdersProdsVwAdapter.OnItemClickListener  listener) {
         this.listItemOC = listItemOC;
+        this.listener = listener;
+
     }
 
     @NonNull
@@ -62,6 +70,12 @@ public class PoPurchOrdersProdsVwAdapter extends RecyclerView.Adapter<PoPurchOrd
             tvItemOcUM.setText(poPurchOrdersProdsVw.getUomName());
             tvItemOcCantOC.setText(""+poPurchOrdersProdsVw.getQuantity());
             tvItemOcCantRCP.setText(""+poPurchOrdersProdsVw.getReceivedQty());
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onItemClick(poPurchOrdersProdsVw);
+                }
+            });
         }
     }
 }

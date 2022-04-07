@@ -187,8 +187,6 @@ public class HeaderReception extends AppCompatActivity implements View.OnClickLi
                 if( etFechaDesde.getText().length() > 0 )
                 {
                     if( etFechaHasta.getText().length() > 0 ) {
-                        // Intent intent = new Intent(this, GridHeader.class);
-                        // startActivity(intent);
                         //TODO Cargar el Grid de OC del Proveedor
                         listaOCs = obtenerOCs(proveedorSelected.getIdentifier(), proveedorSelected.getUnitId(),
                                 etFechaDesde.getText().toString(), etFechaHasta.getText().toString());
@@ -210,13 +208,6 @@ public class HeaderReception extends AppCompatActivity implements View.OnClickLi
                             }
                         }else{
                             //TODO Cargar el RecyclerView con valor null
-                            /*poAdapter = new PoPurchaseOrdersVwAdapter(listaOCs, new PoPurchaseOrdersVwAdapter.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(PoPurchaseOrdersVw item) {
-                                    procesarItemsOC(item);
-                                }
-                            });
-                            rvListaOCs.setAdapter(poAdapter); */
                             Toast.makeText(this.getApplicationContext(),"No hay ordenes pendientes de recepcion",Toast.LENGTH_LONG).show();
                         }
 
@@ -237,7 +228,6 @@ public class HeaderReception extends AppCompatActivity implements View.OnClickLi
      * @param item
      */
     private void procesarItemsOC(PoPurchaseOrdersVw item) {
-        //Toast.makeText(getApplicationContext(),"Item Seleccionado :  Nro OC : "+item.getPoNumber(), Toast.LENGTH_LONG).show();
 
         final AlertDialog.Builder alter = new AlertDialog.Builder(HeaderReception.this);
         View xView = getLayoutInflater().inflate(R.layout.confirm_oc_process, null);
@@ -257,6 +247,7 @@ public class HeaderReception extends AppCompatActivity implements View.OnClickLi
             btnRecepcionarOC.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    confOC.dismiss();
                     // Llamamos al Intenen encargado de procesar la recepcion
                     Intent intent = new Intent(v.getContext(), DetailReception.class);
                     intent.putExtra("USER_LOGED", userLoged);
@@ -275,8 +266,6 @@ public class HeaderReception extends AppCompatActivity implements View.OnClickLi
 
 
         confOC.show();
-
-
 
     }
 

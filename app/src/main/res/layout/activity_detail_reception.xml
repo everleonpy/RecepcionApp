@@ -112,26 +112,30 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <Button
+                <!--Button
                     android:id="@+id/btnRcpEliminar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Eliminar"
-                    />
+                    /-->
 
                 <Button
                     android:id="@+id/btnRcpSinOrden"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Sin Orden" />
+                    android:text="Sin Orden"
+                    android:layout_marginRight="4dp"/>
 
                 <Button
-                    android:id="@+id/btnRcpRecibir"
+                    android:id="@+id/btnRcpConfirmar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Recibir" />
+                    android:text="Confirmar"
+                    android:backgroundTint="#FF0C00"
+                    android:textColor="#FFF"
+                    android:layout_marginLeft="4dp"/>
 
             </LinearLayout>
         </LinearLayout>

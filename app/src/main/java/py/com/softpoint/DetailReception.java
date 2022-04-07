@@ -1,10 +1,14 @@
 package py.com.softpoint;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,17 +61,66 @@ public class DetailReception extends AppCompatActivity {
         if( itemsProductos != null )
         {
             Toast.makeText(getApplicationContext(), "Size : "+itemsProductos.size(),Toast.LENGTH_LONG).show();
-            itemAdater = new PoPurchOrdersProdsVwAdapter(itemsProductos);
+            itemAdater = new PoPurchOrdersProdsVwAdapter(itemsProductos, new PoPurchOrdersProdsVwAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(PoPurchOrdersProdsVw item) {
+                    //TODO Tomamos el item de producto a recepcionar
+                    // Toast.makeText(getApplicationContext(),"Producto : "+item.getProductName(),Toast.LENGTH_LONG).show();
+                    confirmarItem(item);
+                }
+            });
             rvItemProductos.setAdapter(itemAdater);
 
         }
 
+    }
+
+    /**
+     * Metodo encargado de llamar al Dialogo input_reception_item
+     * @param item
+     */
+    private void confirmarItem(PoPurchOrdersProdsVw item) {
+        final AlertDialog.Builder alert = new AlertDialog.Builder(DetailReception.this);
+        View xview = getLayoutInflater().inflate(R.layout.input_reception_item, null);
+
+        // Componet TextView
+        TextView tvItemNroOC,  tvItemProveedorName, tvItemCodigo, tvItemDescripcion, tvItemUM;
+        tvItemNroOC = xview.findViewById(R.id.tvDetailNroOC);
+        tvItemNroOC.setText(ocSelected.getPoNumber());
+        tvItemProveedorName = xview.findViewById(R.id.tvDetailProveedorName);
+        tvItemProveedorName.setText(proveedorSelected.getName());
+        tvItemCodigo = xview.findViewById(R.id.tvDetailCodigo);
+        tvItemCodigo.setText(item.getBarCode());
+        tvItemDescripcion = xview.findViewById(R.id.tvDetailDescription);
+        tvItemDescripcion.setText(item.getProductName());
+        tvItemUM = xview.findViewById(R.id.tvDetailUm);
+        tvItemUM.setText(item.getUomName());
+
+        // Component Botones Item confirm
+        Button btnDescartar, btnRecibir;
+        btnDescartar = xview.findViewById(R.id.btnDescartar);
+        btnRecibir = xview.findViewById(R.id.btnRecibir);
+
+        alert.setView(xview);
+
+        final AlertDialog itemRecibirDialog =  alert.create();
+        itemRecibirDialog.setCanceledOnTouchOutside(false);
 
 
+        //TODO Botones Listener
+        btnDescartar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    itemRecibirDialog.dismiss();
+            }
+        });
 
+        itemRecibirDialog.show();
 
 
     }
+
+
 
     /**
      * Metodo encargado de cargar los items OC
@@ -102,6 +155,5 @@ public class DetailReception extends AppCompatActivity {
         }
         return itemsProductos;
     }
-
 
 }
