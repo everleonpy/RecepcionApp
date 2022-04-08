@@ -222,6 +222,13 @@ public class HeaderReception extends AppCompatActivity implements View.OnClickLi
 
     }
 
+     /**
+     * Control de tacla BackProccess
+     */
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 
     /**
      * Metodo para invocado al seleccoinar la OC a procesar

@@ -82,6 +82,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
+    /**
+     * Preguntamos si queremos salir de la app
+     */
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        moveTaskToBack(true);
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(1);
+        finish();
+    }
+
     /***
     * Validar usuario Conectado
     * @param usrName

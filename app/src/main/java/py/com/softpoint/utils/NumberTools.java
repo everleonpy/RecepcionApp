@@ -8,7 +8,7 @@ public class NumberTools {
 
     public static String nroFormat(Double amount) {
         DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.getDefault());
-        formatter.applyPattern("#,###,###,###");
+        formatter.applyPattern("###,###,###.##");
         String resp = formatter.format(amount).trim() ;
         return resp;
     }

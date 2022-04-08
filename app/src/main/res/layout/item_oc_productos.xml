@@ -70,6 +70,8 @@
                     android:layout_height="wrap_content"
                     android:text="9,999,999.99"
                     android:layout_marginLeft="4dp"
+                    android:textStyle="bold"
+                    android:textColor="#E53935"
                     />
 
                 <!-- Cantidad Recepcionada -->
@@ -86,6 +88,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="9,999,999.99"
+                    android:textStyle="bold"
+                    android:textColor="#0A7C0E"
                     android:layout_marginLeft="4dp"
                     />
 

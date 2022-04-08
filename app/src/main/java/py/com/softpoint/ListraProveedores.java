@@ -1,8 +1,11 @@
 package py.com.softpoint;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -55,10 +58,35 @@ public class ListraProveedores extends AppCompatActivity implements SearchView.O
             txtABuscar.setOnQueryTextListener(this);
 
         }
-
-
     }
 
+    /**
+     * Metodo que controla la salida de la app
+     */
+    @Override
+    public void onBackPressed() {
+
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+
+        alertBuilder.setMessage("Desea salir de la Aplicacion")
+                    .setCancelable(false)
+                    .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            moveTaskToBack(true);
+                            android.os.Process.killProcess(android.os.Process.myPid());
+                            System.exit(1);
+                        }
+                    }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                            }
+                        });
+
+            AlertDialog mesg = alertBuilder.create();
+            mesg.show();
+    }
 
     /**
      * Carga la lista de Proveedores

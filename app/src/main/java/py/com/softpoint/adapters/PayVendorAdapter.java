@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,7 +32,7 @@ public class PayVendorAdapter extends RecyclerView.Adapter<PayVendorAdapter.View
 
     public PayVendorAdapter(List<PayVendor> listaOriginal, User userLoged, String baseUrl) {
         this.listaOriginal = listaOriginal;
-        this.listaCompleta  = new LinkedList<>();
+        this.listaCompleta  = new ArrayList<>();
         this.userLoged = userLoged;
         this.URL_BASE = baseUrl;
         listaCompleta.addAll(listaOriginal);

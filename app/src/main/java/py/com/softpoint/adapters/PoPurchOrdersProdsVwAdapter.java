@@ -8,15 +8,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 import py.com.softpoint.R;
 import py.com.softpoint.pojos.PoPurchOrdersProdsVw;
+import py.com.softpoint.utils.NumberTools;
 
 public class PoPurchOrdersProdsVwAdapter extends RecyclerView.Adapter<PoPurchOrdersProdsVwAdapter.ViewHolder> {
 
     private List<PoPurchOrdersProdsVw> listItemOC;
-
+    private List<PoPurchOrdersProdsVw> listaFull;
     final PoPurchOrdersProdsVwAdapter.OnItemClickListener  listener;
 
     public interface OnItemClickListener {
@@ -26,7 +30,8 @@ public class PoPurchOrdersProdsVwAdapter extends RecyclerView.Adapter<PoPurchOrd
     public PoPurchOrdersProdsVwAdapter(List<PoPurchOrdersProdsVw> listItemOC, PoPurchOrdersProdsVwAdapter.OnItemClickListener  listener) {
         this.listItemOC = listItemOC;
         this.listener = listener;
-
+        this.listaFull = new ArrayList<>();
+        this.listaFull.addAll(listItemOC);
     }
 
     @NonNull
@@ -47,12 +52,41 @@ public class PoPurchOrdersProdsVwAdapter extends RecyclerView.Adapter<PoPurchOrd
     }
 
 
-     /**
+    /**
+     * Metodo para filtar items de Productos
+     * @param txt
+     */
+    public void filtarItem(String txt)
+    {
+        int size = txt.length();
+            if( size == 0 )
+            {
+                listItemOC.clear();
+                listItemOC.addAll(listaFull);
+            }else
+            {
+                List<PoPurchOrdersProdsVw> itemsProd = listItemOC.stream()
+                                                                .filter(it -> (it.getBarCode().trim()+it.getProductName()
+                                                                .toLowerCase(Locale.ROOT).trim()).contains(txt.toLowerCase(Locale.ROOT)))
+                                                                .collect(Collectors.toList());
+                listItemOC.clear();
+                listItemOC.addAll(itemsProd);
+            }
+
+        notifyDataSetChanged();
+    }
+
+    public List<PoPurchOrdersProdsVw> getListItemOC() {
+        return listItemOC;
+    }
+
+
+    /**
      * ViewHolder
      */
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvItemOcCodeBar, tvItemOcDescripcion, tvItemOcUM,tvItemOcCantOC, tvItemOcCantRCP;
 
+        TextView tvItemOcCodeBar, tvItemOcDescripcion, tvItemOcUM,tvItemOcCantOC, tvItemOcCantRCP;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -68,8 +102,8 @@ public class PoPurchOrdersProdsVwAdapter extends RecyclerView.Adapter<PoPurchOrd
             tvItemOcCodeBar.setText(poPurchOrdersProdsVw.getBarCode());
             tvItemOcDescripcion.setText(poPurchOrdersProdsVw.getProductName());
             tvItemOcUM.setText(poPurchOrdersProdsVw.getUomName());
-            tvItemOcCantOC.setText(""+poPurchOrdersProdsVw.getQuantity());
-            tvItemOcCantRCP.setText(""+poPurchOrdersProdsVw.getReceivedQty());
+            tvItemOcCantOC.setText(NumberTools.nroFormat(poPurchOrdersProdsVw.getQuantity()));
+            tvItemOcCantRCP.setText(NumberTools.nroFormat(poPurchOrdersProdsVw.getReceivedQty()));
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

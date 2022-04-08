@@ -4,19 +4,17 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.io.IOException;
 import java.util.List;
-
 import py.com.softpoint.adapters.PoPurchOrdersProdsVwAdapter;
-import py.com.softpoint.adapters.PoPurchaseOrdersVwAdapter;
 import py.com.softpoint.apiclient.PoPurchOrdersProdsVwApi;
 import py.com.softpoint.pojos.PayVendor;
 import py.com.softpoint.pojos.PoPurchOrdersProdsVw;
@@ -25,9 +23,10 @@ import py.com.softpoint.utils.Cliente;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class DetailReception extends AppCompatActivity {
+public class DetailReception extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     private TextView nroOC, proveedorName;
+    private SearchView txtSearch;
     private RecyclerView rvItemProductos;
     private PayVendor proveedorSelected;
     private PoPurchaseOrdersVw ocSelected;
@@ -55,25 +54,55 @@ public class DetailReception extends AppCompatActivity {
         rvItemProductos = findViewById(R.id.rvRcpItemsProductos);
         rvItemProductos.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false));
 
-
         // Cargamos los items de la OC
         itemsProductos = getItemsOC(Long.parseLong(ocSelected.getPoNumber()));
         if( itemsProductos != null )
         {
-            Toast.makeText(getApplicationContext(), "Size : "+itemsProductos.size(),Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Total Items : "+itemsProductos.size(),Toast.LENGTH_LONG).show();
             itemAdater = new PoPurchOrdersProdsVwAdapter(itemsProductos, new PoPurchOrdersProdsVwAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(PoPurchOrdersProdsVw item) {
                     //TODO Tomamos el item de producto a recepcionar
-                    // Toast.makeText(getApplicationContext(),"Producto : "+item.getProductName(),Toast.LENGTH_LONG).show();
                     confirmarItem(item);
                 }
             });
+
+            txtSearch = findViewById(R.id.svTxtSearch);
+            txtSearch.setOnQueryTextListener(this);
+
             rvItemProductos.setAdapter(itemAdater);
 
         }
 
     }
+
+    /**
+     * Pulsar BackProcess
+     */
+    @Override
+    public void onBackPressed() {
+       // super.onBackPressed();
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+        alertBuilder.setMessage(" Cerrar ventana Registro ?")
+                .setCancelable(false)
+                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        DetailReception.super.onBackPressed();
+                    }
+                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }) ;
+
+        AlertDialog msg = alertBuilder.create();
+        msg.show();
+
+    }
+
 
     /**
      * Metodo encargado de llamar al Dialogo input_reception_item
@@ -96,6 +125,11 @@ public class DetailReception extends AppCompatActivity {
         tvItemUM = xview.findViewById(R.id.tvDetailUm);
         tvItemUM.setText(item.getUomName());
 
+        // EditText
+        EditText tvItemRcpQty = xview.findViewById(R.id.etDetailQty);
+        tvItemRcpQty.setText(item.getReceivedQty()+"");
+        tvItemRcpQty.setSelectAllOnFocus(true);
+
         // Component Botones Item confirm
         Button btnDescartar, btnRecibir;
         btnDescartar = xview.findViewById(R.id.btnDescartar);
@@ -106,20 +140,32 @@ public class DetailReception extends AppCompatActivity {
         final AlertDialog itemRecibirDialog =  alert.create();
         itemRecibirDialog.setCanceledOnTouchOutside(false);
 
-
         //TODO Botones Listener
+        btnRecibir.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    itemRecibirDialog.dismiss();
+                    int xposition  = itemsProductos.indexOf(item);
+
+                    if( tvItemRcpQty.getText().length() > 0 )
+                    {
+                        item.setReceivedQty(Double.parseDouble(tvItemRcpQty.getText().toString()));
+                        //Toast.makeText(getApplicationContext(), "Cantidad : " + item.getQtyReceivedTolPct(), Toast.LENGTH_SHORT).show();
+                        itemAdater.getListItemOC().set(xposition, item);
+                        itemAdater.notifyItemChanged(xposition);
+
+                    }
+            }
+        });
+
         btnDescartar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                     itemRecibirDialog.dismiss();
             }
         });
-
         itemRecibirDialog.show();
-
-
     }
-
 
 
     /**
@@ -156,4 +202,17 @@ public class DetailReception extends AppCompatActivity {
         return itemsProductos;
     }
 
+    /*
+    * Metodos asosiados al SearchView de items de productos
+    */
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String txt) {
+        itemAdater.filtarItem(txt);
+        return false;
+    }
 }
