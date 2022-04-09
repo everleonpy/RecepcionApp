@@ -18,6 +18,7 @@ import py.com.softpoint.apiclient.LoginApi;
 import py.com.softpoint.dbutils.DbHelper;
 import py.com.softpoint.pojos.User;
 import py.com.softpoint.utils.Cliente;
+import py.com.softpoint.utils.DataEnvManager;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -41,7 +42,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         dbHelper = new DbHelper(MainActivity.this);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-
         //Setings
         txtUsername = findViewById(R.id.etUserName);
         txtPassword = findViewById(R.id.etPassword);
@@ -52,6 +52,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnAceptar.setOnClickListener(this);
         btnSalir.setOnClickListener(this);
 
+        // Seting Version
+        String version = DataEnvManager.getEnv( getApplicationContext() ).get("VERSION").toString();
+        Toast.makeText(getApplicationContext(),"Version : "+version,Toast.LENGTH_SHORT).show();;
     }
 
     @Override

@@ -76,6 +76,7 @@ public class ListraProveedores extends AppCompatActivity implements SearchView.O
                             moveTaskToBack(true);
                             android.os.Process.killProcess(android.os.Process.myPid());
                             System.exit(1);
+                            finish();
                         }
                     }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                             @Override

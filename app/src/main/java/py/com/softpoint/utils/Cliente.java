@@ -26,19 +26,9 @@ public class Cliente {
         HttpLoggingInterceptor loggin = new HttpLoggingInterceptor();
         loggin.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        /* Seteamos estos parametros para que reconozca el campo fecha que viene en long..
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
-            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                return new Date(json.getAsJsonPrimitive().getAsLong());
-            }
-        });*/
-        //Gson gson = builder.create();
-
-
         // Se setean los parametros de coneccion via http y timeout de coneccion
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
-                .connectTimeout(10 , TimeUnit.SECONDS)
+                .connectTimeout(8 , TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS);
 

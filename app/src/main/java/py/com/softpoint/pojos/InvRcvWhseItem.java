@@ -19,6 +19,4 @@ public class InvRcvWhseItem implements Serializable {
     private String itemUomName;
     private Double quantity;
 
-
-
 }
