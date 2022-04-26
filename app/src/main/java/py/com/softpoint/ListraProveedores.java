@@ -17,7 +17,9 @@ import py.com.softpoint.apiclient.PayVendorApi;
 import py.com.softpoint.pojos.PayVendor;
 import py.com.softpoint.pojos.User;
 import py.com.softpoint.utils.Cliente;
+import py.com.softpoint.utils.CustomProgress;
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ListraProveedores extends AppCompatActivity implements SearchView.OnQueryTextListener {
@@ -28,7 +30,6 @@ public class ListraProveedores extends AppCompatActivity implements SearchView.O
     private PayVendorAdapter adapter;
     private User userLoged;
     private String baseUrl;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +48,7 @@ public class ListraProveedores extends AppCompatActivity implements SearchView.O
         Log.i("LOGIN","UserName : "+userLoged.getFullName());
 
         listaProveedores = cargarProveedores( userLoged.getSiteId() );
-        Log.i("LOGIN", "Cant. Registros Proveedores : "+listaProveedores.size());
+        //Log.i("LOGIN", "Cant. Registros Proveedores : "+listaProveedores.size());
 
         if( listaProveedores.size() > 0 )
         {
@@ -58,6 +59,7 @@ public class ListraProveedores extends AppCompatActivity implements SearchView.O
             txtABuscar.setOnQueryTextListener(this);
 
         }
+
     }
 
     /**

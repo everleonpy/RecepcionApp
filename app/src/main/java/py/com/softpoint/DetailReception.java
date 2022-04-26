@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.List;
 import py.com.softpoint.adapters.PoPurchOrdersProdsVwAdapter;
 import py.com.softpoint.apiclient.PoPurchOrdersProdsVwApi;
+import py.com.softpoint.pojos.InvWarehouse;
 import py.com.softpoint.pojos.PayVendor;
 import py.com.softpoint.pojos.PoPurchOrdersProdsVw;
 import py.com.softpoint.pojos.PoPurchaseOrdersVw;
@@ -25,11 +26,12 @@ import retrofit2.Response;
 
 public class DetailReception extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
-    private TextView nroOC, proveedorName;
+    private TextView nroOC, proveedorName,depositoName;
     private SearchView txtSearch;
     private RecyclerView rvItemProductos;
     private PayVendor proveedorSelected;
     private PoPurchaseOrdersVw ocSelected;
+    private InvWarehouse depositoSelected;
     private List<PoPurchOrdersProdsVw> itemsProductos;
     private PoPurchOrdersProdsVwAdapter itemAdater;
     private String urlBase;
@@ -44,12 +46,15 @@ public class DetailReception extends AppCompatActivity implements SearchView.OnQ
         extras = getIntent().getExtras();
         proveedorSelected = (PayVendor) extras.get("PROVEEDOR");
         ocSelected = (PoPurchaseOrdersVw) extras.get("OC_SELECTED");
+        depositoSelected = (InvWarehouse) extras.get("DEPOSITO");
 
         // Component
         nroOC = findViewById(R.id.dataNroOC);
         nroOC.setText(ocSelected.getPoNumber());
         proveedorName = findViewById(R.id.dataProveedorName);
         proveedorName.setText(proveedorSelected.getName());
+        depositoName = findViewById(R.id.dataDeposito);
+        depositoName.setText(depositoSelected.getName());
         // RecyclerView Item
         rvItemProductos = findViewById(R.id.rvRcpItemsProductos);
         rvItemProductos.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false));

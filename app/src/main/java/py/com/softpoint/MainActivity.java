@@ -1,5 +1,6 @@
 package py.com.softpoint;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,6 +10,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -18,8 +20,10 @@ import py.com.softpoint.apiclient.LoginApi;
 import py.com.softpoint.dbutils.DbHelper;
 import py.com.softpoint.pojos.User;
 import py.com.softpoint.utils.Cliente;
+import py.com.softpoint.utils.CustomProgress;
 import py.com.softpoint.utils.DataEnvManager;
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -31,7 +35,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btnAceptar;
     private Button btnSalir;
     private DbHelper dbHelper;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     * @return
     */
     private User validUser(String usrName) {
+
         LoginApi loginApi = Cliente.getClient(BASE_URL).create(LoginApi.class);
         Call<User> call = loginApi.getUser(usrName.trim());
 
@@ -123,7 +127,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             {
                                 if( httpResp.code() == 204 )
                                 {
-
                                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                                         @Override
                                         public void run() {
@@ -131,10 +134,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                             Toast.LENGTH_LONG).show();
                                         }
                                     });
-
-                                }/*else{
-
-                                }*/
+                                }
 
                                 userLoged = null;
                             }

@@ -19,6 +19,7 @@
         <entry key="app/src/main/res/layout/item_oc_productos.xml" value="0.3651041666666667" />
         <entry key="app/src/main/res/layout/item_orden_compras.xml" value="0.3645833333333333" />
         <entry key="app/src/main/res/layout/item_proveedor.xml" value="0.3500905797101449" />
+        <entry key="app/src/main/res/layout/prograss_bar_dialog.xml" value="0.44166666666666665" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.22135416666666666" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.168" />
       </map>

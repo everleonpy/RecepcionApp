@@ -6,9 +6,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Bundle;
-import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -17,9 +15,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
-
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
@@ -94,6 +90,7 @@ public class HeaderReception extends AppCompatActivity implements View.OnClickLi
         {
             ArrayAdapter<InvWarehouse> depositoAdapter =  new ArrayAdapter<InvWarehouse>(this,
                     R.layout.support_simple_spinner_dropdown_item,lstDepositos);
+
             spDepositos.setAdapter(depositoAdapter);
         }
 
@@ -243,6 +240,9 @@ public class HeaderReception extends AppCompatActivity implements View.OnClickLi
         ocTvNroOC.setText(item.getPoNumber());
         TextView ocMonto = xView.findViewById(R.id.lblMonto);
         ocMonto.setText(NumberTools.nroFormat(item.getAmount()));
+        TextView ocDeposito = xView.findViewById(R.id.lblDeposito);
+        InvWarehouse depositoSelected = (InvWarehouse) spDepositos.getSelectedItem();
+        ocDeposito.setText(depositoSelected.getName());
 
         Button btnCancelar = xView.findViewById(R.id.btnCancelOC);
         Button btnRecepcionarOC = xView.findViewById(R.id.btnRecepcionarOC);
@@ -260,6 +260,7 @@ public class HeaderReception extends AppCompatActivity implements View.OnClickLi
                     intent.putExtra("USER_LOGED", userLoged);
                     intent.putExtra("PROVEEDOR",proveedorSelected);
                     intent.putExtra("OC_SELECTED",item);
+                    intent.putExtra("DEPOSITO", depositoSelected);
                     v.getContext().startActivity(intent);
                 }
             });

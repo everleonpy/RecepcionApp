@@ -58,7 +58,6 @@ public class DbRecepcion extends DbHelper{
         return resp;
     }
 
-
     /**
      * Recupera todos los proveedores activos
      * @return
@@ -67,7 +66,6 @@ public class DbRecepcion extends DbHelper{
 
         DbHelper dbHelper = new DbHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-
         ArrayList<PayVendor> resp = new ArrayList<>();
         Cursor cursor;
 
