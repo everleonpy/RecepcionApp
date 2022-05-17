@@ -261,6 +261,7 @@ public class HeaderReception extends AppCompatActivity implements View.OnClickLi
                     intent.putExtra("PROVEEDOR",proveedorSelected);
                     intent.putExtra("OC_SELECTED",item);
                     intent.putExtra("DEPOSITO", depositoSelected);
+                    intent.putExtra("URL_BASE", baseURL);
                     v.getContext().startActivity(intent);
                 }
             });

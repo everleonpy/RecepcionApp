@@ -13,4 +13,8 @@ import retrofit2.http.Path;
 public interface PoPurchOrdersProdsVwApi {
     @GET("/RecepcionBE/api/itemsoc/get/{nroOC}")
     Call<List<PoPurchOrdersProdsVw>>  getItemsOC(@Path("nroOC") Long nroOC);
+
+
+    @GET("/RecepcionBE/api/itemsoc/get/{orderId}/{itemId}")
+    Call<PoPurchOrdersProdsVw>  getItemOc(@Path("orderId") Long orderId,@Path("itemId") Long itemId);
 }

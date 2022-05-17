@@ -95,14 +95,38 @@
                     android:textSize="14dp"
                     android:textStyle="bold"
                     />
-
             </LinearLayout>
 
+            <!-- Botones -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="4dp">
 
+                <Button
+                    android:id="@+id/btnRcpSinOrden"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Sin Orden"
+                    android:layout_marginRight="4dp"/>
+
+                <Button
+                    android:id="@+id/btnRcpConfirmar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Confirmar"
+                    android:backgroundTint="#FF0C00"
+                    android:textColor="#FFF"
+                    android:layout_marginLeft="4dp"/>
+
+            </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- DETALLE DATA ENTRY -->
+    <!-- DETALLE DATA ENTRY
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -134,54 +158,254 @@
                     />
 
             </LinearLayout>
-            <!-- Botones -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
 
-                <!--Button
-                    android:id="@+id/btnRcpEliminar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Eliminar"
-                    /-->
-
-                <Button
-                    android:id="@+id/btnRcpSinOrden"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Sin Orden"
-                    android:layout_marginRight="4dp"/>
-
-                <Button
-                    android:id="@+id/btnRcpConfirmar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Confirmar"
-                    android:backgroundTint="#FF0C00"
-                    android:textColor="#FFF"
-                    android:layout_marginLeft="4dp"/>
-
-            </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+    -->
 
-    <SearchView
-        android:id="@+id/svTxtSearch"
+
+    <!-- DATA INPUT -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"/>
+        android:orientation="vertical"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvRcpItemsProductos"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:textColor="@color/black"
+                android:textAlignment="center"
+                android:text="PRODUCTO A RECEPCIONAR"
+                android:textStyle="bold"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Codigo : "
+                android:textAlignment="textEnd"/>
+
+            <EditText
+                android:id="@+id/etDetailCodigo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:ems="10"
+                android:singleLine="true"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="6dp"
+            >
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Descripcion : "
+                android:textAlignment="textEnd"/>
+
+            <TextView
+                android:id="@+id/tvDetailDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:minHeight="48dp"
+                android:textSize="14dp"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="4dp">
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Un. Medida : "
+                android:textAlignment="textEnd"/>
+
+
+            <Spinner
+                android:id="@+id/spListaUm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+        </LinearLayout>
+
+        <!-- Data Entry -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Cantidad : "
+                android:textAlignment="textEnd"/>
+
+            <EditText
+                android:id="@+id/etDetailQty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:enabled="false"
+                android:hint="0"
+                android:inputType="numberDecimal"
+                android:textSize="15dp"
+                android:textColor="@color/black"
+                 />
+        </LinearLayout>
+
+
+        <!-- Botoner de Opciones-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnDescartar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Descartar"
+                />
+
+            <Button
+                android:id="@+id/btnConsItemsRecepcionados"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#00897B"
+                android:layout_weight="1"
+                android:text="Ver Items"
+                />
+
+
+            <Button
+                android:id="@+id/btnRecibirItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="#FF0C00"
+                android:textColor="#FFF"
+                android:text="Recibir"
+                />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Ultimo Item Cargado -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="2dp"
-        android:padding="4dp"
-        />
+        android:orientation="vertical"
+        android:background="#EDE7E7"
+        android:layout_marginTop="6dp">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="Ultimo Colectado"
+            android:textStyle="bold"
+            android:textSize="18dp"
+            android:textColor="@color/black"
+            android:layout_margin="6dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="2dp">
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:text="Codigo : "
+                android:textAlignment="textEnd"
+                />
+            <TextView
+                android:id="@+id/tvLastCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:textColor="#43A047"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="2dp">
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:text="U.M. : "
+                android:textAlignment="textEnd"
+                />
+            <TextView
+                android:id="@+id/tvLastUm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:textColor="#43A047"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="2dp">
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:text="Cantidad : "
+                android:textAlignment="textEnd"
+                />
+            <TextView
+                android:id="@+id/tvLastQty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:textColor="#43A047"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                />
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>
+
 

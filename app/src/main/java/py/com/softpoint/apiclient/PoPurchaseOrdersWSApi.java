@@ -16,6 +16,8 @@ public interface PoPurchaseOrdersWSApi {
     Call<List<PoPurchaseOrdersVw>> getOCPendientes(@Path("vendorId") Long vendorId, @Path("siteId") Long siteID,
                                                    @Path("fechaDesde") String fechaDesde, @Path("fechaHasta") String fechaHasta);
 
+    @GET("/RecepcionBE/api/oc/update/{orderId}/{receivingId}")
+    Call<Void> updateReceivingId(@Path("orderId") Long orderId, @Path("receivingId") Long receivingId);
 
     @POST("/RecepcionBE/api/oc/getall")
     Call<List<PoPurchaseOrdersVw>> postOCPendites(@Body ListaOCParam para);

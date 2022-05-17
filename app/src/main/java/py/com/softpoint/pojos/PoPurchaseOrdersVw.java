@@ -39,15 +39,17 @@ public class PoPurchaseOrdersVw implements Serializable
     private Long orgId;
     private String poDate;
     private Long siteId;
+    private String rcvUnordItems;
 
     public PoPurchaseOrdersVw() {
     }
 
-    public PoPurchaseOrdersVw(String comments, Integer vendorSiteId, Integer maxEarlyDays, String overRecptAction, Integer receivingId, String vndSiteName,
-                              String orderType, Double volumenOvrTolPct, Double stdOvrTolPct, Integer maxLateDays, String promisedDate, String receivingAction,
-                              String siteName, String notifyTo, String poNumber, String currencyName, String poStatus, String purchaserName, Long purchaserId, String fullReceipt,
-                              Double weightOvrTolPct, Long currendyId, String vendorName, Double lcAmount, Double amount, String expirationDate, String awaitedDate, Long unitId, Long identifier,
-                              Long vendorId, Long orgId, String poDate, Long siteId) {
+    public PoPurchaseOrdersVw(String comments, Integer vendorSiteId, Integer maxEarlyDays, String overRecptAction, Integer receivingId,
+                              String vndSiteName, String orderType, Double volumenOvrTolPct, Double stdOvrTolPct, Integer maxLateDays,
+                              String promisedDate, String receivingAction, String siteName, String notifyTo, String poNumber, String currencyName,
+                              String poStatus, String purchaserName, Long purchaserId, String fullReceipt, Double weightOvrTolPct, Long currendyId,
+                              String vendorName, Double lcAmount, Double amount, String expirationDate, String awaitedDate, Long unitId, Long identifier,
+                              Long vendorId, Long orgId, String poDate, Long siteId, String rcvUnordItems) {
 
         this.comments = comments;
         this.vendorSiteId = vendorSiteId;
@@ -82,6 +84,7 @@ public class PoPurchaseOrdersVw implements Serializable
         this.orgId = orgId;
         this.poDate = poDate;
         this.siteId = siteId;
+        this.rcvUnordItems = rcvUnordItems;
     }
 
     public String getComments() {
@@ -346,5 +349,13 @@ public class PoPurchaseOrdersVw implements Serializable
 
     public void setSiteId(Long siteId) {
         this.siteId = siteId;
+    }
+
+    public String getRcvUnordItems() {
+        return rcvUnordItems;
+    }
+
+    public void setRcvUnordItems(String rcvUnordItems) {
+        this.rcvUnordItems = rcvUnordItems;
     }
 }

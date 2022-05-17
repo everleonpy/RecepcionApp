@@ -28,7 +28,8 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String BASE_URL = "http://192.168.10.21:8080/";
+    private static String BASE_URL;
+            //= "http://192.168.20.1:8080/";
     private static User userLoged = null;
     private EditText txtUsername;
     private EditText txtPassword;
@@ -57,7 +58,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Seting Version
         String version = DataEnvManager.getEnv( getApplicationContext() ).get("VERSION").toString();
-        Toast.makeText(getApplicationContext(),"Version : "+version,Toast.LENGTH_SHORT).show();;
+        Toast.makeText(getApplicationContext(),"Version : "+version,Toast.LENGTH_SHORT).show();
+        BASE_URL = "http://"+DataEnvManager.getEnv(getApplicationContext()).get("IP_SERVER").toString()+":8080/" ;
     }
 
     @Override
