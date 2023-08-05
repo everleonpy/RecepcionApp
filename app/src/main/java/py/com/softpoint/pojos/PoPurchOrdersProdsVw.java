@@ -3,7 +3,8 @@ package py.com.softpoint.pojos;
 import java.io.Serializable;
 import java.util.Date;
 
-public class PoPurchOrdersProdsVw implements Serializable {
+public class PoPurchOrdersProdsVw implements Serializable
+{
 
     private double amount;
     private double approvedQty;

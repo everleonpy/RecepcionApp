@@ -1,6 +1,5 @@
 package py.com.softpoint;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,23 +9,20 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import java.io.IOException;
-
 import py.com.softpoint.apiclient.LoginApi;
 import py.com.softpoint.dbutils.DbHelper;
 import py.com.softpoint.pojos.User;
 import py.com.softpoint.utils.Cliente;
-import py.com.softpoint.utils.CustomProgress;
 import py.com.softpoint.utils.DataEnvManager;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener
+{
 
     private static String BASE_URL;
             //= "http://192.168.20.1:8080/";
@@ -56,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnAceptar.setOnClickListener(this);
         btnSalir.setOnClickListener(this);
 
-        // Seting Version
+        // Seting Version and URL Server
         String version = DataEnvManager.getEnv( getApplicationContext() ).get("VERSION").toString();
         Toast.makeText(getApplicationContext(),"Version : "+version,Toast.LENGTH_SHORT).show();
         BASE_URL = "http://"+DataEnvManager.getEnv(getApplicationContext()).get("IP_SERVER").toString()+":8080/" ;
@@ -92,8 +88,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     /**
-     * Preguntamos si queremos salir de la app
-     */
+    * Preguntamos si queremos salir de la app
+    */
     @Override
     public void onBackPressed() {
         super.onBackPressed();

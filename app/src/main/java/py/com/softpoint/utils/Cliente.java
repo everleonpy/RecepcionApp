@@ -1,5 +1,8 @@
 package py.com.softpoint.utils;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -13,6 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Cliente {
 
     private static Retrofit retrofit = null;
+    private static Gson gson = null;
 
     public static Retrofit getClient(String base_url)
     {
@@ -30,9 +34,14 @@ public class Cliente {
 
             if ( retrofit == null)
             {
+                gson = new GsonBuilder()
+                        .setLenient()
+                        .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+                        .create();
+
                 retrofit = new Retrofit.Builder()
                     .baseUrl(base_url)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .client(httpClient.build()) // <-- usamos el log level
                     .build();
 

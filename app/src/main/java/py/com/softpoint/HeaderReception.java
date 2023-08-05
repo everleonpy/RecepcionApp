@@ -90,7 +90,6 @@ public class HeaderReception extends AppCompatActivity implements View.OnClickLi
         {
             ArrayAdapter<InvWarehouse> depositoAdapter =  new ArrayAdapter<InvWarehouse>(this,
                     R.layout.support_simple_spinner_dropdown_item,lstDepositos);
-
             spDepositos.setAdapter(depositoAdapter);
         }
 
@@ -98,12 +97,28 @@ public class HeaderReception extends AppCompatActivity implements View.OnClickLi
         datePickerSet();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if( etFechaDesde.getText().toString().length() > 0 && etFechaHasta.getText().toString().length() > 0)
+        {
+            lstDepositos = cargarDepositos(proveedorSelected.getUnitId()); // Pedimos la lista de depositos del Sitio del usuario
+            Log.i("DEPOSITOS : "," "+lstDepositos.size());
+            if( lstDepositos.size() > 0 )
+            {
+                ArrayAdapter<InvWarehouse> depositoAdapter =  new ArrayAdapter<InvWarehouse>(this,
+                        R.layout.support_simple_spinner_dropdown_item,lstDepositos);
+                spDepositos.setAdapter(depositoAdapter);
+            }
+            Toast.makeText(getApplicationContext(), "OnResumen : HeaderReception", Toast.LENGTH_LONG).show();
+        }
+    }
 
     /**
-     * Cargar la lista de Depositos Habilitados para la resepcion
-     * @param l
-     * @return
-     */
+    * Cargar la lista de Depositos Habilitados para la resepcion
+    * @param l
+    * @return
+    */
     private List<InvWarehouse> cargarDepositos(Long l) {
         InvWarehouseApi api = Cliente.getClient(this.baseURL).create(InvWarehouseApi.class);
         Call<List<InvWarehouse>> call = api.getAll(userLoged.getSiteId());

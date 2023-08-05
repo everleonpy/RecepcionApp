@@ -3,8 +3,10 @@ package py.com.softpoint;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,11 +15,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-
 import py.com.softpoint.apiclient.InvMaterialApi;
+import py.com.softpoint.apiclient.InvPoReceivingItemApi;
 import py.com.softpoint.apiclient.InvReceivingApi;
 import py.com.softpoint.apiclient.InvUnitOfMeasureApi;
 import py.com.softpoint.apiclient.PoPurchOrdersProdsVwApi;
@@ -32,7 +35,9 @@ import py.com.softpoint.pojos.PoPurchOrdersProdsVw;
 import py.com.softpoint.pojos.PoPurchaseOrdersVw;
 import py.com.softpoint.pojos.User;
 import py.com.softpoint.utils.Cliente;
+import py.com.softpoint.utils.DataEnvManager;
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DetailReception extends AppCompatActivity  implements View.OnKeyListener {
@@ -41,7 +46,7 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
     private TextView tvLastCode, tvLastUm, tvLastQty;
     private EditText etDetailCodigo, etDetailQty;
     private Spinner spListaUm;
-    private Button btnRecibir;
+    private Button btnRecibir, btnRcpConfirmar, btnConsItemsRecepcionados;
     private String urlBase;
 
     // Varialbles de datos
@@ -50,11 +55,13 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
     private InvWarehouse depositoSelected;
     private User userLoged;
     private boolean isItemsOk;
+    private boolean isConfirm;
     private InvMaterial itemProducto;
     private InvUnitOfMeasure unidadMedidaSelected;
     private PoPurchOrdersProdsVw itemOC;
     private List<InvUnitOfMeasure> listUm;
     private InvReceiving recepcionSelected;
+    private Long deviceID;
 
     //Atributo auxiliar para validar si existe el producto imputado en la Orden de compras
     private boolean isFoundProdOnOc = false;
@@ -73,6 +80,7 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
         ocSelected = (PoPurchaseOrdersVw) extras.get("OC_SELECTED");
         depositoSelected = (InvWarehouse) extras.get("DEPOSITO");
         urlBase = (String) extras.get("URL_BASE");
+        isConfirm = false;
 
         initComponent();
         validOcVsRecepcion();
@@ -80,6 +88,12 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
         prepararSpinerUm();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Toast.makeText(getApplicationContext(), "OnResumen",Toast.LENGTH_LONG).show();
+    }
 
 
     //<editor-fold desc="prepareSpinerUm">
@@ -132,47 +146,150 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
         etDetailCodigo.setOnKeyListener(this);
         etDetailQty = findViewById(R.id.etDetailQty);
 
-        // Buttons
+        // Recuperamos el ID del PDA que esta en el properties
+        deviceID = Long.parseLong(DataEnvManager.getEnv(getApplicationContext()).get("ID_MOVIL").toString());
+                //(Long) DataEnvManager.getEnv(getApplicationContext()).get("ID_MOVIL");
+
+        // Buton Consultar items colectados
+        btnConsItemsRecepcionados = findViewById(R.id.btnConsItemsRecepcionados);
+        btnConsItemsRecepcionados.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if( ocSelected.getReceivingId() != null && ocSelected.getReceivingId() > 0 )
+                {
+                    Log.i("VER_TEMS", "Mostar Lista de Items Colectados");
+                    Intent intent = new Intent(getApplicationContext(), ItemsRecepcionados.class);
+                    intent.putExtra("ORDER_ID", ocSelected.getIdentifier());
+                    intent.putExtra("RECEIV_ID", ocSelected.getReceivingId());
+                    intent.putExtra("BASE_URL",urlBase);
+                    startActivity(intent);
+                }else{
+                    Toast msg = Toast.makeText(getApplicationContext(),"RECEPCION NO TIENE NINGUN ITEM",Toast.LENGTH_LONG);
+                    msg.setGravity(Gravity.CENTER,0,0);
+                    // msg.setMargin(20,20);
+                    msg.show();
+                }
+            }
+        });
+
+        // Buton para confirmar una recepcion
+        btnRcpConfirmar = findViewById(R.id.btnRcpConfirmar);
+        btnRcpConfirmar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Log.i("CONFIRMAR", "Confirmar Recepcion");
+                AlertDialog.Builder xdialog = new AlertDialog.Builder(DetailReception.this);
+                xdialog.setTitle("CONFIRMAR");
+                xdialog.setMessage("Desea confirmar la recepcion  "+ocSelected.getPoNumber() +" ?");
+                xdialog.setCancelable(false);
+
+                // Boton Cancelar
+                xdialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                // Boton Aceptar
+                xdialog.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if( confirmReceving(ocSelected.getIdentifier(), ocSelected.getReceivingId()) )
+                        {
+                            DetailReception.super.onBackPressed();
+                        }
+                    }
+                });
+
+                xdialog.show();
+            }
+        });
+
+        //Boton para recibir un item
         btnRecibir = findViewById(R.id.btnRecibirItem);
         btnRecibir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if( etDetailQty.getText().toString().length() > 0  ) {
+                Log.i("CANTIDAD","Cant.OC  : "+itemOC.getQuantity());
+                Log.i("CANTIDAD","Cant.PDA : "+etDetailQty.getText());
+
+                if( etDetailQty.getText().toString().length() > 0
+                    && Double.valueOf(etDetailQty.getText().toString()) <= itemOC.getQuantity()) { // si se cargo un monto mayor a cero en el campo cantidad
 
                     //<editor-fold desc="RECEIVING_ID Verficamos">
-                    if ( !isFoundReceving )
+                    if ( !isFoundReceving ) // si no  existe la recepcion asociada a la OC seleccionada
                     {
+                        Log.i("RECEPCION","NO EXISTE LA RECEPCION");
                         // Sino existe la recepcion lo creamos
-                        if( recepcionSelected.getIdentifier() == 0 || recepcionSelected.getIdentifier() == null ) {
-                            ocSelected.setReceivingId(createReciving(recepcionSelected));
-                            if (ocSelected.getReceivingId() != null){
+                        // con los datos preparados al validar las OC y Recepcion
+                        if( recepcionSelected.getIdentifier() == null ) {
+
+                                ocSelected.setReceivingId(createReciving(recepcionSelected));
+                                recepcionSelected = getRecepcion(ocSelected.getReceivingId());
+
+                            if (ocSelected.getReceivingId() != null || ocSelected.getReceivingId() > 0 ){
                                 updateOcReceivingId(ocSelected.getIdentifier(), ocSelected.getReceivingId());
+                                guardarItemRecepcion();
                                 isFoundReceving = true;
                             }
+
                         }else{ // Si existe lo recuperamos la recepcion
-                            recepcionSelected = getRecepcion(ocSelected.getReceivingId());
+
+                            Log.i("RECE","Receving ID "+ocSelected.getReceivingId() );
+                            Log.i("RECE","Recepcion Selected ID "+recepcionSelected.getIdentifier() );
+
+                            if( ocSelected.getReceivingId().longValue() != recepcionSelected.getIdentifier()){
+                                recepcionSelected = getRecepcion(ocSelected.getReceivingId());
+                            }
+                        }
+                        // TODO Verificamos si puede recepcionar productos que no esten en la OC
+                        if( ocSelected.getRcvUnordItems() != null )
+                        {
+                            if( !ocSelected.getRcvUnordItems().toString().equalsIgnoreCase("N") )
+                            {
+                                guardarItemRecepcion();
+                            }
                         }
 
-                    } else {
+                    } else {  // si ya existe la recepcion
+                            Log.i("RECE", "OcSelected ID: "+ocSelected.getReceivingId()+"  S/N : "+ocSelected.getRcvUnordItems());
                             // TODO Verificamos si puede recepcionar productos que no esten en la OC
-
+                            if( ocSelected.getRcvUnordItems() != null )
+                            {
+                                if( !ocSelected.getRcvUnordItems().toString().equalsIgnoreCase("N") )
+                                {
+                                    guardarItemRecepcion();
+                                }
+                            }else{ guardarItemRecepcion(); }
                     }
                     //</editor-fold>
-
                     mostrarUltimoCargado();
                     deactivateComponents();
+                    etDetailCodigo.requestFocus();
 
                 }else { // Validamos que tenga cargado la cantidad
-                    etDetailQty.setError("INGRESE CANTIDAD");
+                    etDetailQty.setError("CANTIDAD INCORRECTA...");
                     return;
                 }
             }
 
             /*
-                metodo para guardar los item de recepcion
+             *   metodo para guardar los item de recepcion
              */
             private boolean guardarItemRecepcion() {
+
+                // TODO validamos que cantidad no supere a la de la orden..... ( Pedido Maria )
+                Log.i("CANTIDAD","Cant.OC : "+itemOC.getQuantity());
+                Log.i("CANTIDAD","Cant.PDA : "+itemOC.getQuantity());
+                //if ( itemOC.getQuantity() >= Double.valueOf(etDetailQty.getText().toString()) )
+                //{
+                //    etDetailQty.setError("Cantidad supera el pedido");
+                //    return false;
+               // }
+
 
                 // TODO mandamos a la Base de datos el item
                 InvPoReceivingItem recItem = new InvPoReceivingItem();
@@ -189,7 +306,31 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
                 recItem.setInvMaterialId(itemProducto.getIdentifier());
                 recItem.setInvMtlBarCode(itemProducto.getBarCode());
                 recItem.setItemUomId(unidadMedidaSelected.getIdentifier());
+                recItem.setDeviceId(deviceID); // Identificador del Dipositivo....
 
+                // Enviamos a la base de datos ....
+                InvPoReceivingItemApi api = Cliente.getClient(urlBase).create(InvPoReceivingItemApi.class);
+                Call<Integer> call  = api.createItem(recItem);
+
+                /*
+                 *  Guardamos el item de recepcion
+                 */
+                call.enqueue(new Callback<Integer>() {
+                    @Override
+                    public void onResponse(Call<Integer> call, Response<Integer> response) {
+                        if( response.isSuccessful() && response.code() == 201 ) // 201 created status
+                        {
+                            Log.i("POST","Item Creado : "+response.body());
+                        }else{
+                            Log.i("POST","ERROR AL CREAR ITEM RECEPCION");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Integer> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(),"Error : "+t.toString(),Toast.LENGTH_LONG).show();
+                    }
+                });
                 return  true;
             }
 
@@ -208,9 +349,10 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
                         public void run() {
                             try {
                                 Response<Void> httpResp = call.execute();
-
                                 if( httpResp.code() != 202) {  // ACEPTED
                                     ocSelected.setReceivingId(null);
+                                }else{
+
                                 }
 
                             } catch (IOException e) {
@@ -230,10 +372,46 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
         deactivateComponents();
     }
 
-    private void mostrarUltimoCargado() {
+    /**
+    * <p> Metodo encargado de marcar como finalizado una recepcion </p>
+    * @param identifierOc
+    * @param receivingId
+    * @return
+    */
+    private boolean confirmReceving(Long identifierOc, Integer receivingId)
+    {
 
+        PoPurchaseOrdersWSApi api = Cliente.getClient(urlBase).create(PoPurchaseOrdersWSApi.class);
+        Call<Void>  call  = api.confirmReceivingId(identifierOc, receivingId.longValue());
+        try {
+            Thread hilo = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Response<Void> httpResp = call.execute();
+                        if( httpResp.isSuccessful() && httpResp.code() == 200) {
+                                isConfirm = true;
+                        }else{
+                            isConfirm = false;
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            hilo.start();
+            hilo.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return isConfirm;
+    }
+
+    private void mostrarUltimoCargado()
+    {
         tvLastCode.setText(itemProducto.getBarCode());
-        tvLastUm.setText(itemOC.getUomName()); //TODO este hay que tomar del item selecconado al cargar......
+        //tvLastUm.setText(itemOC.getUomName()); //TODO este hay que tomar del item selecconado al cargar......
+        tvLastUm.setText(unidadMedidaSelected.getName());
         tvLastQty.setText(etDetailQty.getText());
     }
 
@@ -246,7 +424,9 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
          *  ReceivingId en la tabla de Orden de compras corresponde al Id de la recepcion
          *  sino creamos uno temporal que se confirmara al guardar el primer item de producto.-
          */
-        if (ocSelected.getReceivingId() == 0 || ocSelected.getReceivingId() != null){
+        Log.i("RECEPCION", "OC SELECTED : "+ocSelected.getReceivingId() );
+
+        if (ocSelected.getReceivingId() == 0 || ocSelected.getReceivingId() == null){
 
             //TODO Preparamos la nueva RECEPCION a Confirmar al guardar el primer item Recepcionado.
             recepcionSelected = new InvReceiving();
@@ -264,11 +444,14 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
             recepcionSelected.setProgram("Avanza_Mobile_Receivings");
             recepcionSelected.setReceiptPath("RECEPCIONES_OC");
 
+            Log.i("RECEPCION", "RECEPCION PREPARADA PARA CREARSE ...." );
             isFoundReceving = false; // Avisamos que no exite ninguna recepcion asociada
 
         }else {
+
             recepcionSelected = getRecepcion(ocSelected.getReceivingId());
-            if (recepcionSelected != null) {
+            Log.i("RECEPCION", "ID DE RECEPCION : "+recepcionSelected.getIdentifier());
+            if ( recepcionSelected != null ) {
                 isFoundReceving = true;
             }else{
                 isFoundReceving = false;
@@ -293,6 +476,7 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
                         Response<Long> httpResp = call.execute();
                         if( httpResp.isSuccessful() && httpResp.code() == 200 )
                         {
+                            Log.i("CREATE_RECEIVING","ID_RECEIVING : "+httpResp.body());
                             ocSelected.setReceivingId(httpResp.body().intValue());
                         }
 
@@ -310,44 +494,51 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
     }
 
     /**
-     * Metodo encargado de validar que exista el item en la orden de compras
-     *
-     * @param identiferOC
-     * @param itemProducto
-     * @return
-     */
+    * Metodo encargado de validar que exista el item en la orden de compras
+    *
+    * @param identiferOC
+    * @param itemProducto
+    * @return
+    */
     private boolean verficarItemEnOC(Long identiferOC, Long itemProducto) {
         PoPurchOrdersProdsVwApi api = Cliente.getClient(urlBase).create(PoPurchOrdersProdsVwApi.class);
         Call<PoPurchOrdersProdsVw> call = api.getItemOc( identiferOC, itemProducto);
 
-        Thread hilo = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Response<PoPurchOrdersProdsVw> httpResp = call.execute();
-                    if( httpResp.isSuccessful() && httpResp.code() == 200 )
-                    {
-                        itemOC = httpResp.body();
-                        isFoundProdOnOc = true;
+        try {
+            Thread hilo = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Response<PoPurchOrdersProdsVw> httpResp = call.execute();
+
+                        if( httpResp.isSuccessful() && httpResp.code() == 200 )
+                        {
+                            itemOC = httpResp.body();
+                            isFoundProdOnOc = true;
+                        }
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
-            }
-        });
-
+            });
+            hilo.start();
+            hilo.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return isFoundProdOnOc;
     }
 
     //<editor-fold desc="Check Items">
     /**
-     * Chequea si los datos son correctos y validos
-     * @return falso o verdadero
-     */
+    * Chequea si los datos son correctos y validos
+    * @return falso o verdadero
+    */
     private boolean CheckItems() {
         if( etDetailCodigo.length() > 0 )
         {
+            // Buscamos el producto si esta creado
             itemProducto = getProucto(etDetailCodigo.getText().toString().trim());
             if( itemProducto ==  null )
             {
@@ -355,10 +546,11 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
                 return false;
             }else{
 
-                    //TODO ACA HAY QUE VALIDAR SI ES QUE PUEDE O NO RECIBIR ITEMS QUE NO ESTAN EN LA ORDEN.
-                    if( ocSelected.getRcvUnordItems() == "N")
+                    // TODO ACA HAY QUE VALIDAR SI ES QUE PUEDE O NO RECIBIR ITEMS QUE NO ESTAN EN LA ORDEN RcvUnordItems() tiene que tener valor  "S"
+                    // PARA HABILITAR LA RECEPCION DE PRODUCTOS QUE NO ESTEN EN LA ORDEN DE COMPRAS
+                    if( ocSelected.getRcvUnordItems() == "N" || ocSelected.getRcvUnordItems() == null )
                     {
-                        if(verficarItemEnOC(ocSelected.getIdentifier(), itemProducto.getIdentifier())){
+                        if( verficarItemEnOC(ocSelected.getIdentifier(), itemProducto.getIdentifier()) ){
                             spListaUm.setSelection(getOumPosition( itemOC.getItemUomId()));
                             return true;
                         }else{
@@ -367,6 +559,10 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
                         }
 
                     }else {
+                        if( !verficarItemEnOC(ocSelected.getIdentifier(), itemProducto.getIdentifier()) ){
+                            spListaUm.setSelection(getOumPosition(itemProducto.getBaseUomId()));
+                            Toast.makeText(getApplicationContext(),"VERIFIQUE BIEN ESTE PRODUCTO",Toast.LENGTH_LONG).show();
+                        }
                         return true;
                     }
 
@@ -396,6 +592,7 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
     }
     //</editor-fold>
 
+    //<editor-fold desc="CargarUnidadMedida">
     /**
     * Metodo encargado de cargar la lista de valores par el spiiner de Unidad de Medidas
     * @return
@@ -432,10 +629,11 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
         }
         return listUm;
     }
+    //</editor-fold>
 
     //<editor-fold desc="getRecepcion">
     /**
-     * Recupera la recepcion asignada e la OC
+     * <p> Recupera la recepcion asignada e la OC </p>
      * @param receivingId
      * @return
      */
@@ -452,7 +650,9 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
                         if( httpResp.isSuccessful() && httpResp.code() == 200 )
                         {
                             recepcionSelected = httpResp.body();
+                            Log.i("RECEPCOIN", " RECEPCION : "+httpResp.body());
                         }else{
+                            Log.i("RECEPCOIN"," NO EXISTE LA RECEPCION : "+receivingId);
                             recepcionSelected = null;
                         }
 
@@ -546,7 +746,7 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
     //</editor-fold>
 
     /**
-     *
+     * Evento que se dispara cuando se pulsa Enter en el campo codigo de producto.-
      * @param v
      * @param keyCode
      * @param event
@@ -562,6 +762,7 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
             {
                 tvDetailDescription.setText(itemProducto.getDescription());
                 etDetailQty.setEnabled(true);
+                etDetailQty.requestFocus();
                 activateComponents();
             }
 

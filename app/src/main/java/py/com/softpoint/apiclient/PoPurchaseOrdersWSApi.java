@@ -19,6 +19,10 @@ public interface PoPurchaseOrdersWSApi {
     @GET("/RecepcionBE/api/oc/update/{orderId}/{receivingId}")
     Call<Void> updateReceivingId(@Path("orderId") Long orderId, @Path("receivingId") Long receivingId);
 
+    @GET("/RecepcionBE/api/oc/confirm/{orderId}/{receivingId}")
+    Call<Void> confirmReceivingId(@Path("orderId") Long orderId, @Path("receivingId") Long receivingId);
+
+
     @POST("/RecepcionBE/api/oc/getall")
     Call<List<PoPurchaseOrdersVw>> postOCPendites(@Body ListaOCParam para);
 }

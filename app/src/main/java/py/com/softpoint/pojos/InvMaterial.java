@@ -6,7 +6,8 @@ import java.io.Serializable;
  *
  * @author eleon
  */
-public class InvMaterial implements Serializable {
+public class InvMaterial implements Serializable
+{
     
     private Long identifier;
     private String internalCode;

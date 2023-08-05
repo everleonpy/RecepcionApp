@@ -17,12 +17,11 @@ import py.com.softpoint.apiclient.PayVendorApi;
 import py.com.softpoint.pojos.PayVendor;
 import py.com.softpoint.pojos.User;
 import py.com.softpoint.utils.Cliente;
-import py.com.softpoint.utils.CustomProgress;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ListraProveedores extends AppCompatActivity implements SearchView.OnQueryTextListener {
+public class ListraProveedores extends AppCompatActivity implements SearchView.OnQueryTextListener
+{
 
     private List<PayVendor> listaProveedores;
     private RecyclerView payRecyclerView;
@@ -92,10 +91,10 @@ public class ListraProveedores extends AppCompatActivity implements SearchView.O
     }
 
     /**
-     * Carga la lista de Proveedores
-     * @param siteId
-     * @return
-     */
+    * Carga la lista de Proveedores
+    * @param siteId
+    * @return
+    */
     private List<PayVendor> cargarProveedores(long siteId) {
 
         PayVendorApi payVendorApi = Cliente.getClient(this.baseUrl).create(PayVendorApi.class);
