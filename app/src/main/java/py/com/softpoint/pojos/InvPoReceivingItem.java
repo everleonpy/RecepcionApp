@@ -7,7 +7,8 @@ import java.util.Date;
 * 
 * @author eleon
 */
-public class InvPoReceivingItem  implements Serializable {
+public class InvPoReceivingItem  implements Serializable
+{
     
     private Long identifier;
     private Long receivingId;

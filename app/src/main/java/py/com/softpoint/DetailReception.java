@@ -27,6 +27,7 @@ import py.com.softpoint.apiclient.PoPurchOrdersProdsVwApi;
 import py.com.softpoint.apiclient.PoPurchaseOrdersWSApi;
 import py.com.softpoint.pojos.InvMaterial;
 import py.com.softpoint.pojos.InvPoReceivingItem;
+import py.com.softpoint.pojos.InvPoReceivingItemQTY;
 import py.com.softpoint.pojos.InvReceiving;
 import py.com.softpoint.pojos.InvUnitOfMeasure;
 import py.com.softpoint.pojos.InvWarehouse;
@@ -66,6 +67,9 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
     //Atributo auxiliar para validar si existe el producto imputado en la Orden de compras
     private boolean isFoundProdOnOc = false;
     private boolean isFoundReceving = false;
+    private Double itemProdQty = 0.0; // Total de item ya colectado
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +104,8 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
     /**
     * Metodo que prepara el spiner de unidades de medida
     */
-    private void prepararSpinerUm() {
+    private void prepararSpinerUm()
+    {
         ArrayAdapter<InvUnitOfMeasure> adapter = new ArrayAdapter<>(getApplicationContext(),
                 R.layout.support_simple_spinner_dropdown_item,listUm);
 
@@ -174,7 +179,8 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
 
         // Buton para confirmar una recepcion
         btnRcpConfirmar = findViewById(R.id.btnRcpConfirmar);
-        btnRcpConfirmar.setOnClickListener(new View.OnClickListener() {
+        btnRcpConfirmar.setOnClickListener(new View.OnClickListener()
+        {
             @Override
             public void onClick(View v) {
 
@@ -185,7 +191,8 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
                 xdialog.setCancelable(false);
 
                 // Boton Cancelar
-                xdialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                xdialog.setNegativeButton("No", new DialogInterface.OnClickListener()
+                {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -193,7 +200,8 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
                 });
 
                 // Boton Aceptar
-                xdialog.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                xdialog.setPositiveButton("Si", new DialogInterface.OnClickListener()
+                {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if( confirmReceving(ocSelected.getIdentifier(), ocSelected.getReceivingId()) )
@@ -209,15 +217,27 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
 
         //Boton para recibir un item
         btnRecibir = findViewById(R.id.btnRecibirItem);
-        btnRecibir.setOnClickListener(new View.OnClickListener() {
+        btnRecibir.setOnClickListener(new View.OnClickListener()
+        {
             @Override
             public void onClick(View v) {
 
-                Log.i("CANTIDAD","Cant.OC  : "+itemOC.getQuantity());
-                Log.i("CANTIDAD","Cant.PDA : "+etDetailQty.getText());
+                /*
+                *  Buscamos en el BackEnd si ya hay registros de conteo y si hay lo recuperamos para sumar a la cantidad colectada
+                * */
+                itemProdQty = getTotalQtyFromApi(unidadMedidaSelected.getIdentifier(),
+                                                 itemProducto.getIdentifier(),
+                                                 ocSelected.getIdentifier());
 
+                Log.i("CANTIDAD","Cant. OC         : "+itemOC.getQuantity());
+                Log.i("CANTIDAD","Cant. Confirmada : "+itemProdQty);
+
+                 /* TODO  : Si se cargo un monto mayor a cero en el campo cantidad y
+                 *  se verifica que la cantidad colectada tampoco supere a la cantidad pedida en la OC
+                 */
                 if( etDetailQty.getText().toString().length() > 0
-                    && Double.valueOf(etDetailQty.getText().toString()) <= itemOC.getQuantity()) { // si se cargo un monto mayor a cero en el campo cantidad
+                    && ( Double.valueOf(etDetailQty.getText().toString()) + itemProdQty ) <= itemOC.getQuantity())
+                    {
 
                     //<editor-fold desc="RECEIVING_ID Verficamos">
                     if ( !isFoundReceving ) // si no  existe la recepcion asociada a la OC seleccionada
@@ -276,20 +296,21 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
                 }
             }
 
+
             /*
-             *   metodo para guardar los item de recepcion
-             */
+            *   metodo para guardar los item de recepcion
+            */
             private boolean guardarItemRecepcion() {
 
                 // TODO validamos que cantidad no supere a la de la orden..... ( Pedido Maria )
                 Log.i("CANTIDAD","Cant.OC : "+itemOC.getQuantity());
                 Log.i("CANTIDAD","Cant.PDA : "+itemOC.getQuantity());
-                //if ( itemOC.getQuantity() >= Double.valueOf(etDetailQty.getText().toString()) )
-                //{
-                //    etDetailQty.setError("Cantidad supera el pedido");
-                //    return false;
-               // }
 
+                /*if ( itemOC.getQuantity() >= Double.valueOf(etDetailQty.getText().toString()) )
+                {
+                    etDetailQty.setError("Cantidad supera el pedido");
+                    return false;
+                }*/
 
                 // TODO mandamos a la Base de datos el item
                 InvPoReceivingItem recItem = new InvPoReceivingItem();
@@ -371,6 +392,49 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
 
         deactivateComponents();
     }
+
+    /**
+    * <p> Metodo encargado de recuperar la cantidad ya recepcionada desde la base de datos via API<p/>
+    * @param itemUomId
+    * @param invMatrialId
+    * @param purchOrderId
+    * @return
+    */
+    private Double getTotalQtyFromApi(Long itemUomId, Long invMatrialId, Long purchOrderId)
+    {
+        InvPoReceivingItemApi api =   Cliente.getClient(urlBase).create(InvPoReceivingItemApi.class);
+        Call<InvPoReceivingItemQTY> call = api.getQtyItemProduct(itemUomId, invMatrialId, purchOrderId);
+
+        try {
+            Thread hilo = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Response<InvPoReceivingItemQTY> httpResp = call.execute();
+                        if( httpResp.code() == 200 )
+                        {
+                             InvPoReceivingItemQTY qty = httpResp.body();
+                             if( qty != null )
+                             {
+                                 itemProdQty = qty.getQuantity();
+                             }else{
+                                 itemProdQty = 0.0;
+                             }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            hilo.start();
+            hilo.join();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return itemProdQty;
+    }
+
 
     /**
     * <p> Metodo encargado de marcar como finalizado una recepcion </p>
@@ -550,7 +614,8 @@ public class DetailReception extends AppCompatActivity  implements View.OnKeyLis
                     // PARA HABILITAR LA RECEPCION DE PRODUCTOS QUE NO ESTEN EN LA ORDEN DE COMPRAS
                     if( ocSelected.getRcvUnordItems() == "N" || ocSelected.getRcvUnordItems() == null )
                     {
-                        if( verficarItemEnOC(ocSelected.getIdentifier(), itemProducto.getIdentifier()) ){
+                        if( verficarItemEnOC(ocSelected.getIdentifier(), itemProducto.getIdentifier()) )
+                        {
                             spListaUm.setSelection(getOumPosition( itemOC.getItemUomId()));
                             return true;
                         }else{
